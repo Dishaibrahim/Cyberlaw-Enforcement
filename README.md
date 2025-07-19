@@ -12,7 +12,7 @@ This repository currently contains only the **initial scaffold** of the project 
 
 ## 🧠 Motivation
 
-This project was born after witnessing **serious online bullying**, where individuals with no accountability used social media platforms to **target and harass respectable families**. The sheer **vulgarity, hate, and boldness** of these actions—done with **cheap audacity and zero consequences**—made it clear that current moderation systems are not enough.
+This project was born after witnessing **serious online bullying**, where individuals with no accountability used social media platforms to **target and harass respectable families**. The sheer **vulgarity, hate, and boldness** of these actions—done made it clear that current moderation systems are not enough.
 
 There needs to be a **fair, transparent, and scalable solution** that gives power back to users while maintaining ethical standards.
 

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberLaw Agent</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom CSS for additional styling -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" xintegrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0x40KjR_w2oMFLJ/fC9uA5k+Kz/fD8pXq0n5FzW7+MvK/d0t7C4g0T06A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-br from-purple-500 to-indigo-600 p-4 flex flex-col items-center font-inter text-gray-100 min-h-screen">
+
+    <div id="app-container" class="w-full max-w-6xl">
+        <h1 class="text-4xl font-extrabold mb-6 text-white text-center">
+            <i class="fas fa-gavel mr-2"></i>Cyber Law Enforcement Agent
+        </h1>
+        <p class="text-lg mb-8 text-center max-w-xl mx-auto">
+            Your browser extension for multi-agent cyber law enforcement. Click the 🚩 button on social media posts to auto-fill content.
+        </p>
+
+        <!-- Error Display -->
+        <div id="error-display" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative mb-4" role="alert">
+            <strong class="font-bold">Error!</strong>
+            <span id="error-message" class="block sm:inline ml-2"></span>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="main-content">
+            <!-- Flag a Post Section -->
+            <div id="flag-post-section" class="bg-white p-6 rounded-2xl shadow-xl w-full mb-8 text-gray-800">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Flag a Post</h2>
+                <div class="mb-4">
+                    <label for="postContent" class="block text-base font-medium text-gray-700 mb-1">
+                        Post Content (Text/Caption):
+                        <span class="text-sm text-gray-500 ml-1">(Auto-filled from page if you use the 🚩 button)</span>
+                    </label>
+                    <textarea id="postContent" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" rows="5" placeholder="Content will be auto-filled from a flagged post, or you can paste manually here."></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="postLink" class="block text-base font-medium text-gray-700 mb-1">
+                        Post Link (Optional, for reference):
+                    </label>
+                    <input type="url" id="postLink" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" placeholder="e.g., https://twitter.com/user/status/12345">
+                </div>
+                <div class="mb-4">
+                    <label for="victimInfo" class="block text-base font-medium text-gray-700 mb-1">
+                        Victim Information (Name/ID):
+                    </label>
+                    <input type="text" id="victimInfo" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" placeholder="e.g., 'User123', 'John Doe'">
+                </div>
+                <div class="mb-6">
+                    <label for="victimEthAddress" class="block text-base font-medium text-gray-700 mb-1">
+                        Victim ETH/MATIC Address (Optional, for real compensation):
+                    </label>
+                    <input type="text" id="victimEthAddress" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-gray-900" placeholder="e.g., 0xAbc123... (starts with 0x)">
+                </div>
+                <button id="flag-post-button" class="w-full py-3 px-5 rounded-xl text-white font-bold text-lg transition duration-300 transform bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 hover:scale-105">
+                    <span id="button-text"><i class="fas fa-flag mr-2"></i>Flag Post for Review</span>
+                    <span id="button-spinner" class="hidden flex items-center justify-center">
+                        <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Processing...
+                    </span>
+                </button>
+            </div>
+
+            <!-- Processing Log Section -->
+            <div id="processing-log-section" class="bg-white p-6 rounded-2xl shadow-xl w-full mb-8 text-gray-800">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Processing Log</h2>
+                <div id="log-display" class="bg-gray-100 p-4 rounded-lg h-48 overflow-y-auto border border-gray-300 text-sm text-gray-700">
+                    <p class="text-gray-500 italic">No activity yet. Flag a post to start.</p>
+                </div>
+                <p class="mt-4 text-center text-lg font-semibold text-indigo-800">
+                    Current Status: <span id="current-status" class="font-bold">Idle</span>
+                </p>
+            </div>
+
+            <!-- Public Cyber Law Ledger Section -->
+            <div id="ledger-section" class="bg-white p-6 rounded-2xl shadow-xl w-full text-gray-800">
+                <h2 class="text-2xl font-bold mb-4 text-indigo-700">Public Cyber Law Ledger <span class="text-base text-gray-500">(simulated)</span></h2>
+                <p class="mb-4 text-gray-600">
+                    This section displays all recorded cases on the simulated public ledger.
+                    <br>
+                    <span class="font-medium">Your User ID:</span> <span id="user-id-display" class="font-mono text-sm break-all">Loading...</span>
+                </p>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white rounded-lg shadow overflow-hidden">
+                        <thead class="bg-indigo-100">
+                            <tr>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider rounded-tl-lg">Case ID</th>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">Timestamp</th>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">Status</th>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">Violation Type</th>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">Verdict</th>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">Fine (ETH/MATIC)</th>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">Comp. (ETH/MATIC)</th>
+                                <th class="py-2 px-3 text-left text-xs font-semibold text-indigo-700 uppercase tracking-wider">Social Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cases-table-body">
+                            <tr><td colspan="8" class="py-3 px-4 text-sm text-gray-500 italic text-center">No cases recorded on the ledger yet.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Courtroom Session Area (Initially Hidden) -->
+        <div id="courtroom-session-area" class="hidden bg-white p-6 rounded-2xl shadow-xl w-full text-gray-800 mt-8">
+            <h2 class="text-2xl font-bold mb-4 text-indigo-700 text-center">Courtroom Session for Case ID: <span id="courtroom-case-id"></span></h2>
+
+            <!-- Session Controls -->
+            <div class="flex justify-center mb-4 space-x-4">
+                <button id="start-courtroom-button" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200">
+                    Start Courtroom Session
+                </button>
+                <button id="reset-courtroom-button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-xl shadow-lg transition duration-200 hidden">
+                    Reset Session View
+                </button>
+            </div>
+
+            <p class="text-center text-lg font-semibold mb-4">
+                Current Phase: <span id="courtroom-current-phase" class="font-bold text-indigo-800">IDLE</span>
+            </p>
+
+            <!-- Agent Panels -->
+            <div id="agent-panels" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+                <!-- Agent panels will be dynamically inserted here by JavaScript -->
+            </div>
+
+            <!-- Courtroom Transcript -->
+            <div id="courtroom-transcript" class="bg-gray-100 p-4 rounded-xl shadow-inner h-72 overflow-y-auto mb-6">
+                <h3 class="text-xl font-bold text-indigo-700 mb-3">Courtroom Transcript</h3>
+                <div id="courtroom-transcript-content">
+                    <p class="text-gray-500 italic">Session transcript will appear here...</p>
+                </div>
+            </div>
+
+            <!-- Final Verdict Display -->
+            <div id="final-verdict-display" class="hidden bg-green-100 border border-green-400 text-green-700 px-5 py-3 rounded-xl shadow-lg text-center">
+                <h3 class="text-xl font-bold text-green-800 mb-2">Final Verdict!</h3>
+                <p class="text-base mb-1"><span class="font-semibold">Decision:</span> <span id="verdict-decision"></span></p>
+                <p class="text-base mb-1"><span class="font-semibold">Final Fine:</span> <span id="verdict-fine"></span></p>
+                <p class="text-base mb-1"><span class="font-semibold">Ban Status:</span> <span id="verdict-ban"></span></p>
+                <p class="text-sm italic mt-2" id="verdict-explanation"></p>
+                <p class="text-base mt-2 text-green-900">
+                    <span class="font-semibold">Compensation to Victim:</span> <span id="verdict-compensation"></span>
+                </p>
+                <p class="text-base mt-2 text-purple-800 font-bold">
+                    <span class="font-semibold">Social Score:</span> <span id="verdict-social-score"></span> / 100
+                    <span class="text-sm italic ml-2" id="verdict-social-score-explanation"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Your custom JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
